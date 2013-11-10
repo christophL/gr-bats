@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<block>
+	<name>PSK31 Encoder</name>
+	<key>digimodes_psk31_encoder</key>
+	<category>DigiModes</category>
+	<import>import digimodes</import>
+	<make>digimodes.psk31_encoder()</make>
+
+	<source>
+		<name>in</name>
+		<type>byte</type>
+		<nports>1</nports>
+	</source>
+
+</block>

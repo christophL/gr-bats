@@ -192,6 +192,7 @@ varicodes = {
 # import any pure python here
 #
 from psk31_decoder import psk31_decoder
+from psk31_encoder import psk31_encoder
 
 
 
