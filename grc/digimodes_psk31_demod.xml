@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<block>
+	<name>PSK31 Decoder</name>
+	<key>digimodes_psk31_decoder</key>
+	<category>DigiModes</category>
+	<import>import digimodes</import>
+	<make>digimodes.psk31_decoder()</make>
+
+	<sink>
+		<name>in</name>
+		<type>byte</type>
+		<nports>1</nports>
+	</sink>
+
+</block>
