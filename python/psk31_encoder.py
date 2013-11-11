@@ -6,7 +6,7 @@ import digimodes
 
 from gnuradio import gr, blocks
 
-mystring = "ich kaufe ein A und loese: gicht\n"
+mystring = "sitting in my english garden waiting for the sun\n"
 
 class psk31_encoder(gr.sync_block):
     def __init__(self):
