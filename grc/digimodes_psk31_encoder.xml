@@ -7,8 +7,14 @@
 	<import>import digimodes</import>
 	<make>digimodes.psk31_encoder()</make>
 
-	<source>
+	<sink>
 		<name>in</name>
+		<type>message</type>
+		<nports>1</nports>
+	</sink>
+
+	<source>
+		<name>out</name>
 		<type>byte</type>
 		<nports>1</nports>
 	</source>
