@@ -41,14 +41,19 @@ class psk31_decoder(gr.sync_block):
                         c = self.rev_varicodes[self.curr]
                         self.out_string += c
                         sys.stdout.write(c)
+                        if c == "\n":
+                           print "sent pdu"
+                           payload = pmt.make_u8vector(len(self.out_string), 0)
+                           j = 0
+                           for a in self.out_string:
+                               pmt.u8vector_set(payload, j, ord(a)) 
+                               j += 1
+                           self.message_port_pub(pmt.intern('out'), pmt.cons(pmt.PMT_NIL, payload))
                         
-                        if c == '\n':
-                           #send PDU containing out_string
-                           pass
-                    else:
-                        pass
+
                     self.nz = 0
                     self.curr = ""
+                    sys.stdout.flush()
 
             elif i == 1:
                 if self.nz == 1 and self.curr != "":
@@ -56,6 +61,6 @@ class psk31_decoder(gr.sync_block):
                 self.curr += "1"
                 self.nz = 0
 
-        sys.stdout.flush()
+        
         return len(input_items[0])
 
