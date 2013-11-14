@@ -16,7 +16,10 @@ class psk31_decoder(gr.sync_block):
         )
         self.nz = 0
         self.curr = ""
+        self.out_string = ""
         self.rev_varicodes = dict()
+        self.message_port_register_out(pmt.intern('out'))
+
         for k in digimodes.varicodes.keys():
             self.rev_varicodes[digimodes.varicodes[k]] = k
 
@@ -35,7 +38,13 @@ class psk31_decoder(gr.sync_block):
 
                 if self.nz == 2:
                     if self.rev_varicodes.has_key(self.curr):
-                        sys.stdout.write(self.rev_varicodes[self.curr])
+                        c = self.rev_varicodes[self.curr]
+                        self.out_string += c
+                        sys.stdout.write(c)
+                        
+                        if c == '\n':
+                           #send PDU containing out_string
+                           pass
                     else:
                         pass
                     self.nz = 0

@@ -55,6 +55,5 @@ class psk31_encoder(gr.sync_block):
             self.tx_string = self.tx_string[8:]
             items += 1
 
-        print "remaining string: " + self.tx_string
         return items
 

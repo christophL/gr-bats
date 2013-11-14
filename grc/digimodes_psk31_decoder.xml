@@ -13,4 +13,10 @@
 		<nports>1</nports>
 	</sink>
 
+	<source>
+		<name>out</name>
+		<type>message</type>
+		<nports>1</nports>
+	</source>
+
 </block>
