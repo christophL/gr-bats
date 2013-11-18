@@ -26,10 +26,19 @@ include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
 
 list(APPEND digimodes_sources
+    varicodes.cc
+    psk31_encoder_impl.cc
+    psk31_decoder_impl.cc
+)
+
+list(APPEND digimodes_libs
+    ${Boost_LIBRARIES}
+    ${GNURADIO_RUNTIME_LIBRARIES}
+    gnuradio-blocks
 )
 
 add_library(gnuradio-digimodes SHARED ${digimodes_sources})
-target_link_libraries(gnuradio-digimodes ${Boost_LIBRARIES} ${GNURADIO_RUNTIME_LIBRARIES})
+target_link_libraries(gnuradio-digimodes ${digimodes_libs})
 set_target_properties(gnuradio-digimodes PROPERTIES DEFINE_SYMBOL "gnuradio_digimodes_EXPORTS")
 
 ########################################################################

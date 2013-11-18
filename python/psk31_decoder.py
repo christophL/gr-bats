@@ -49,7 +49,7 @@ class psk31_decoder(gr.sync_block):
                                pmt.u8vector_set(payload, j, ord(a)) 
                                j += 1
                            self.message_port_pub(pmt.intern('out'), pmt.cons(pmt.PMT_NIL, payload))
-                        
+                           self.out_string = ""
 
                     self.nz = 0
                     self.curr = ""

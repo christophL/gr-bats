@@ -40,6 +40,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
 if(CMAKE_COMPILER_IS_GNUCXX AND NOT WIN32)
     #http://gcc.gnu.org/wiki/Visibility
     add_definitions(-fvisibility=hidden)
+    add_definitions(-std=c++0x)
 endif()
 
 ########################################################################
@@ -139,9 +140,9 @@ add_custom_target(uninstall
 ########################################################################
 # Add subdirectories
 ########################################################################
-#add_subdirectory(include/digimodes)
-#add_subdirectory(lib)
-#add_subdirectory(swig)
+add_subdirectory(include/digimodes)
+add_subdirectory(lib)
+add_subdirectory(swig)
 add_subdirectory(python)
 add_subdirectory(grc)
 add_subdirectory(apps)

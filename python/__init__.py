@@ -42,7 +42,7 @@ if _RTLD_GLOBAL != 0:
 
 
 # import swig generated symbols into the digimodes namespace
-#from digimodes_swig import *
+from digimodes_swig import *
 
 varicodes = {
 
@@ -191,8 +191,8 @@ varicodes = {
 
 # import any pure python here
 #
-from psk31_decoder import psk31_decoder
-from psk31_encoder import psk31_encoder
+#from psk31_decoder import psk31_decoder
+#from psk31_encoder import psk31_encoder
 
 
 

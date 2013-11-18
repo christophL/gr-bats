@@ -22,5 +22,8 @@
 ########################################################################
 install(FILES
     api.h
-    DESTINATION include/digimodes
+    psk31_encoder.h
+    psk31_decoder.h
+    DESTINATION ${GR_INCLUDE_DIR}
 )
+
