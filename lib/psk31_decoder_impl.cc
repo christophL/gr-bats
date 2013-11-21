@@ -11,7 +11,7 @@ psk31_decoder_impl::psk31_decoder_impl()
 {
 	
 	message_port_register_out(pmt::mp("out"));
-
+	fill_rev_varimap();
 }
 
 void
@@ -27,15 +27,21 @@ psk31_decoder_impl::work(int noutput,
 		gr_vector_const_void_star& input_items,
 		gr_vector_void_star& output_items){
 	const unsigned char *in = static_cast<const unsigned char *>(input_items[0]);
-
-	for(int i = 0; i < noutput; i++){
+	int n_read = noutput;
+	if(n_read > 0){
+		std::cout << "decoder in work method, read " + n_read << std::endl;
+	}
+	for(int i = 0; i < n_read; i++){
 		unsigned char bit = in[i];
 		if(bit == 0) bit = 1;
 		else bit = 0;
+
+		std::cout << "decoder: current bit:" + bit << std::endl;
 		
 		if(bit == 0){
 			d_num_zeroes += 1;
 			if(d_num_zeroes == 2){
+				std::cout << "curr: " + d_curr << std::endl;
 				if(d_rev_varimap.count(d_curr) > 0){
 					unsigned char c = d_rev_varimap[d_curr];
 					d_out_string =+ c;
@@ -58,7 +64,7 @@ psk31_decoder_impl::work(int noutput,
 		}
 	}
 
-	return noutput;
+	return n_read;
 }
 
 psk31_decoder::sptr

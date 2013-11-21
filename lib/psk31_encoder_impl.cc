@@ -61,7 +61,7 @@ psk31_encoder_impl::work(int noutput,
 	if(!msg.get()){
 		return 0;
 	}
-
+	
 	handle_msg(msg);
 
 	for(int i = 0; i < noutput; i++){
@@ -69,9 +69,9 @@ psk31_encoder_impl::work(int noutput,
 			break;
 		}
 		std::string to_convert = d_tx_string.substr(0,8);
-		unsigned char u8 = (~static_cast<unsigned char>(std::stoul(to_convert, nullptr, 2)) % 2) << 3;
+		unsigned char u8 = ~static_cast<unsigned int>(std::stoul(to_convert, nullptr, 2)) % (2 << 3);
 		out[i] = u8;
-		d_tx_string = d_tx_string.erase(8);
+		d_tx_string = d_tx_string.erase(0,8);
 
 		items += 1;
 		std::cout << "remaining string: " + d_tx_string << std::endl;
