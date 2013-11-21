@@ -28,23 +28,18 @@ psk31_decoder_impl::work(int noutput,
 		gr_vector_void_star& output_items){
 	const unsigned char *in = static_cast<const unsigned char *>(input_items[0]);
 	int n_read = noutput;
-	if(n_read > 0){
-		std::cout << "decoder in work method, read " + n_read << std::endl;
-	}
 	for(int i = 0; i < n_read; i++){
 		unsigned char bit = in[i];
 		if(bit == 0) bit = 1;
 		else bit = 0;
 
-		std::cout << "decoder: current bit:" + bit << std::endl;
-		
 		if(bit == 0){
 			d_num_zeroes += 1;
 			if(d_num_zeroes == 2){
-				std::cout << "curr: " + d_curr << std::endl;
 				if(d_rev_varimap.count(d_curr) > 0){
+					std::cout << "decoder curr: " + d_curr << std::endl;
 					unsigned char c = d_rev_varimap[d_curr];
-					d_out_string =+ c;
+					d_out_string += c;
 					if(c == '\n'){
 						pmt::pmt_t payload = pmt::make_blob(d_out_string.data(), d_out_string.length());	
 						message_port_pub(pmt::mp("out"), pmt::cons(pmt::PMT_NIL, payload));

@@ -31,12 +31,13 @@ psk31_encoder_impl::encode_string(std::string &str){
 		tmp += d_varimap[c];
 		tmp += "00";
 	}
+	tmp += d_varimap['\n'];
 
 	while(tmp.length() % 8 != 0)
             tmp += "1";
 	
 	d_tx_string += tmp;
-	std::cout << "tx_string:" + d_tx_string << std::endl;
+//	std::cout << "tx_string:" + d_tx_string << std::endl;
 }
 
 void
@@ -69,12 +70,12 @@ psk31_encoder_impl::work(int noutput,
 			break;
 		}
 		std::string to_convert = d_tx_string.substr(0,8);
-		unsigned char u8 = ~static_cast<unsigned int>(std::stoul(to_convert, nullptr, 2)) % (2 << 3);
+		unsigned char u8 = ~std::stoul(to_convert, nullptr, 2);
 		out[i] = u8;
 		d_tx_string = d_tx_string.erase(0,8);
 
 		items += 1;
-		std::cout << "remaining string: " + d_tx_string << std::endl;
+//		std::cout << "remaining string: " + d_tx_string << std::endl;
 	}
 	
 	return items;
