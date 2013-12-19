@@ -1,6 +1,9 @@
 #include "psk31_encoder_impl.h"
 #include <gnuradio/io_signature.h>
 
+#define DEBUG 1
+#define DBG DEBUG && std::cout
+
 using namespace gr::digimodes;
 
 psk31_encoder_impl::psk31_encoder_impl()
@@ -28,16 +31,20 @@ psk31_encoder_impl::encode_string(std::string &str){
 	if(str.length() <= 1) return;
 	
 	for(char c : str){
+		if(c == '\n'){
+			break;
+		}
 		tmp += d_varimap[c];
 		tmp += "00";
 	}
 	tmp += d_varimap['\n'];
+	tmp += "00";
 
 	while(tmp.length() % 8 != 0)
-            tmp += "1";
+            tmp += "0";
 	
 	d_tx_string += tmp;
-//	std::cout << "tx_string:" + d_tx_string << std::endl;
+	DBG << "tx_string:" + d_tx_string << std::endl;
 }
 
 void
@@ -75,7 +82,7 @@ psk31_encoder_impl::work(int noutput,
 		d_tx_string = d_tx_string.erase(0,8);
 
 		items += 1;
-//		std::cout << "remaining string: " + d_tx_string << std::endl;
+		DBG << "remaining string: " + d_tx_string << std::endl;
 	}
 	
 	return items;

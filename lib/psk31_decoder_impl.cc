@@ -1,6 +1,9 @@
 #include "psk31_decoder_impl.h"
 #include <gnuradio/io_signature.h>
 
+#define DEBUG 1
+#define dout DEBUG && std::cout
+
 using namespace gr::digimodes;
 
 psk31_decoder_impl::psk31_decoder_impl()
@@ -12,6 +15,8 @@ psk31_decoder_impl::psk31_decoder_impl()
 	
 	message_port_register_out(pmt::mp("out"));
 	fill_rev_varimap();
+	d_out_string.erase();
+	d_curr.erase();
 }
 
 void
@@ -37,13 +42,14 @@ psk31_decoder_impl::work(int noutput,
 			d_num_zeroes += 1;
 			if(d_num_zeroes == 2){
 				if(d_rev_varimap.count(d_curr) > 0){
-					std::cout << "decoder curr: " + d_curr << std::endl;
+					dout << "decoder curr: " + d_curr << std::endl;
 					unsigned char c = d_rev_varimap[d_curr];
 					d_out_string += c;
+					dout << "decoder out_string: " + d_out_string << std::endl;
 					if(c == '\n'){
 						pmt::pmt_t payload = pmt::make_blob(d_out_string.data(), d_out_string.length());	
 						message_port_pub(pmt::mp("out"), pmt::cons(pmt::PMT_NIL, payload));
-						std::cout << "decoder sent pdu" << std::endl;
+						dout << "decoder sent pdu" << std::endl;
 						d_out_string.erase();
 					}				
 				}
