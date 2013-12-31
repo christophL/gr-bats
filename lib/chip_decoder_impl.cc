@@ -58,7 +58,8 @@ namespace bats {
 					continue;
 				}
 				if(!d_written && d_prev_samp == in[base+j]){
-					out[i] = d_prev_out = d_prev_samp;
+					//out[i] = d_prev_out = d_prev_samp;
+					out[i] = d_prev_out = !d_prev_out;
 					d_written = true;
 					//break;
 				} else {
