@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2013 <+YOU OR YOUR COMPANY+>.
+ * Copyright 2013 <c.leitner@student.uibk.ac.at>.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,24 +24,22 @@
 #include <bats/tdma_controller.h>
 
 namespace gr {
-  namespace bats {
+namespace bats {
 
-    class tdma_controller_impl : public tdma_controller
-    {
-     private:
-      // Nothing to declare in this block.
+	class tdma_controller_impl : public tdma_controller
+	{
+		private:
 
-     public:
-      tdma_controller_impl();
-      ~tdma_controller_impl();
+		public:
+			tdma_controller_impl();
+			~tdma_controller_impl();
 
-      // Where all the action really happens
-      int work(int noutput_items,
-	       gr_vector_const_void_star &input_items,
-	       gr_vector_void_star &output_items);
-    };
+			int work(int noutput_items,
+					gr_vector_const_void_star &input_items,
+					gr_vector_void_star &output_items);
+	};
 
-  } // namespace bats
+} // namespace bats
 } // namespace gr
 
 #endif /* INCLUDED_BATS_TDMA_CONTROLLER_IMPL_H */

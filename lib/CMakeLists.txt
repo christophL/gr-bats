@@ -26,8 +26,9 @@ include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
 
 list(APPEND bats_sources
-    chip_decoder_impl.cc
     tdma_controller_impl.cc
+    chip_decoder_impl.cc
+    chip_decoder_impl.cc
 )
 
 add_library(gnuradio-bats SHARED ${bats_sources})
@@ -42,27 +43,3 @@ install(TARGETS gnuradio-bats
     ARCHIVE DESTINATION lib${LIB_SUFFIX} # .lib file
     RUNTIME DESTINATION bin              # .dll file
 )
-
-########################################################################
-# Build and register unit test
-########################################################################
-include(GrTest)
-
-include_directories(${CPPUNIT_INCLUDE_DIRS})
-
-list(APPEND test_bats_sources
-    ${CMAKE_CURRENT_SOURCE_DIR}/test_bats.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/qa_bats.cc
-)
-
-add_executable(test-bats ${test_bats_sources})
-
-target_link_libraries(
-  test-bats
-  ${GNURADIO_RUNTIME_LIBRARIES}
-  ${Boost_LIBRARIES}
-  ${CPPUNIT_LIBRARIES}
-  gnuradio-bats
-)
-
-GR_ADD_TEST(test_bats test-bats)

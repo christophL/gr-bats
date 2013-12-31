@@ -22,6 +22,6 @@
 ########################################################################
 install(FILES
     api.h
-    chip_decoder.h
-    tdma_controller.h DESTINATION include/bats
+    tdma_controller.h
+    chip_decoder.h DESTINATION include/bats
 )

@@ -26,45 +26,45 @@
 #include "tdma_controller_impl.h"
 
 namespace gr {
-  namespace bats {
+namespace bats {
 
-    tdma_controller::sptr
-    tdma_controller::make()
-    {
-      return gnuradio::get_initial_sptr
-        (new tdma_controller_impl());
-    }
+	tdma_controller::sptr
+	tdma_controller::make()
+	{
+		return gnuradio::get_initial_sptr
+				(new tdma_controller_impl());
+	}
 
-    /*
-     * The private constructor
-     */
-    tdma_controller_impl::tdma_controller_impl()
-      : gr::sync_block("tdma_controller",
-              gr::io_signature::make(<+MIN_IN+>, <+MAX_IN+>, sizeof(<+ITYPE+>)),
-              gr::io_signature::make(<+MIN_OUT+>, <+MAX_OUT+>, sizeof(<+OTYPE+>)))
+	/*
+	 * The private constructor
+	 */
+	tdma_controller_impl::tdma_controller_impl()
+			: gr::sync_block("tdma_controller",
+					gr::io_signature::make(1, 1, sizeof(char)),
+					gr::io_signature::make(1, 1, sizeof(char)))
     {}
 
     /*
      * Our virtual destructor.
      */
-    tdma_controller_impl::~tdma_controller_impl()
-    {
-    }
+	tdma_controller_impl::~tdma_controller_impl()
+	{
+	}
 
-    int
-    tdma_controller_impl::work(int noutput_items,
-			  gr_vector_const_void_star &input_items,
-			  gr_vector_void_star &output_items)
-    {
-        const <+ITYPE+> *in = (const <+ITYPE+> *) input_items[0];
-        <+OTYPE+> *out = (<+OTYPE+> *) output_items[0];
+	int
+	tdma_controller_impl::work(int noutput_items,
+			gr_vector_const_void_star &input_items,
+			gr_vector_void_star &output_items)
+	{
+		const char *in = (const char *) input_items[0];
+		char *out = (char *) output_items[0];
 
-        // Do <+signal processing+>
+		// Do <+signal processing+>
 
-        // Tell runtime system how many output items we produced.
-        return noutput_items;
-    }
+		// Tell runtime system how many output items we produced.
+		return noutput_items;
+	}
 
-  } /* namespace bats */
+} /* namespace bats */
 } /* namespace gr */
 

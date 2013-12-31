@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2013 <+YOU OR YOUR COMPANY+>.
+ * Copyright 2013 <c.leitner@student.uibk.ac.at>.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,33 +23,18 @@
 #define INCLUDED_BATS_CHIP_DECODER_H
 
 #include <bats/api.h>
-#include <gnuradio/sync_block.h>
+#include <gnuradio/sync_decimator.h>
 
 namespace gr {
-  namespace bats {
+namespace bats {
+	class BATS_API chip_decoder : virtual public sync_decimator
+	{
+		public:
+			typedef boost::shared_ptr<chip_decoder> sptr;
+			static sptr make(unsigned chips_per_sym);
+	};
 
-    /*!
-     * \brief <+description of block+>
-     * \ingroup bats
-     *
-     */
-    class BATS_API chip_decoder : virtual public gr::sync_block
-    {
-     public:
-      typedef boost::shared_ptr<chip_decoder> sptr;
-
-      /*!
-       * \brief Return a shared_ptr to a new instance of bats::chip_decoder.
-       *
-       * To avoid accidental use of raw pointers, bats::chip_decoder's
-       * constructor is in a private implementation
-       * class. bats::chip_decoder::make is the public interface for
-       * creating new instances.
-       */
-      static sptr make();
-    };
-
-  } // namespace bats
+} // namespace bats
 } // namespace gr
 
 #endif /* INCLUDED_BATS_CHIP_DECODER_H */

@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2013 <+YOU OR YOUR COMPANY+>.
+ * Copyright 2013 <c.leitner@student.uibk.ac.at>.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,53 +18,81 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <gnuradio/io_signature.h>
 #include "chip_decoder_impl.h"
 
+#define DEBUG 1
+#define DBG DEBUG && std::cout
+
 namespace gr {
-  namespace bats {
+namespace bats {
+	chip_decoder_impl::chip_decoder_impl(unsigned chips_per_sym)
+			: sync_decimator("chip_decoder",
+					io_signature::make(1, 1, sizeof(char)),
+					io_signature::make(1, 1, sizeof(char)),
+					chips_per_sym),
+			d_prev_samp(23), d_prev_out(1), d_chips_per_sym(chips_per_sym),
+			d_read(0)
+	{
+		if(chips_per_sym == 0)
+			throw std::out_of_range("chips per symbol must be > 0");
+	}
 
-    chip_decoder::sptr
-    chip_decoder::make()
-    {
-      return gnuradio::get_initial_sptr
-        (new chip_decoder_impl());
-    }
+	chip_decoder_impl::~chip_decoder_impl()
+	{}
 
-    /*
-     * The private constructor
-     */
-    chip_decoder_impl::chip_decoder_impl()
-      : gr::sync_block("chip_decoder",
-              gr::io_signature::make(<+MIN_IN+>, <+MAX_IN+>, sizeof(<+ITYPE+>)),
-              gr::io_signature::make(<+MIN_OUT+>, <+MAX_OUT+>, sizeof(<+OTYPE+>)))
-    {}
+	int
+	chip_decoder_impl::work(int noutput_items,
+			gr_vector_const_void_star &input_items,
+			gr_vector_void_star &output_items)
+	{
+		const char *in = static_cast<const char *>(input_items[0]);
+		char *out = static_cast<char *>(output_items[0]);
+		int items = 0;
+		int i = 0;
+		
+		if(d_prev_samp > 1){
+			d_prev_samp = in[i++];
+			d_read++;
+		}
 
-    /*
-     * Our virtual destructor.
-     */
-    chip_decoder_impl::~chip_decoder_impl()
-    {
-    }
+		//TODO: process chips_per_sym items of the input array _for each_ item to be produced
+		for(; i < noutput_items; i++){
+			if(d_prev_samp != in[i]){
+				d_prev_samp = in[i];
+				d_read++;
+				if(d_read > d_chips_per_sym){
+					out[items++] = d_prev_out;
+					d_read = 0;
+					DBG << boost::to_string(d_prev_out);
+				}
+			} else {
+				if(d_prev_samp == 0){
+					out[items++] = 1;
+					d_prev_out = 1;
+					DBG << "1";
+				} else if(d_prev_samp == 1){
+					out[items++] = 0;
+					d_prev_out = 0;
+					DBG << "0";
+				} else {
+					DBG << "invalid input" << std::endl;
+					assert(false);
+				}
+				d_read = 0;
+			}	
+		}
+		DBG << std::endl;
 
-    int
-    chip_decoder_impl::work(int noutput_items,
-			  gr_vector_const_void_star &input_items,
-			  gr_vector_void_star &output_items)
-    {
-        const <+ITYPE+> *in = (const <+ITYPE+> *) input_items[0];
-        <+OTYPE+> *out = (<+OTYPE+> *) output_items[0];
+		return items;
+	}
 
-        // Do <+signal processing+>
+	chip_decoder::sptr
+	chip_decoder::make(unsigned chips_per_sym)
+	{
+		return gnuradio::get_initial_sptr(new chip_decoder_impl(chips_per_sym));
+	}
 
-        // Tell runtime system how many output items we produced.
-        return noutput_items;
-    }
-
-  } /* namespace bats */
+} /* namespace bats */
 } /* namespace gr */
 

@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2013 <+YOU OR YOUR COMPANY+>.
+ * Copyright 2013 <c.leitner@student.uibk.ac.at>.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,24 +24,25 @@
 #include <bats/chip_decoder.h>
 
 namespace gr {
-  namespace bats {
+namespace bats {
 
-    class chip_decoder_impl : public chip_decoder
-    {
-     private:
-      // Nothing to declare in this block.
+	class chip_decoder_impl : public chip_decoder
+	{
+		private:
+			const unsigned d_chips_per_sym;
+			int d_prev_samp;
+			int d_prev_out;
+			int d_read;
+		public:
+			chip_decoder_impl(unsigned chips_per_sym);
+			~chip_decoder_impl();
 
-     public:
-      chip_decoder_impl();
-      ~chip_decoder_impl();
+			int work(int noutput_items,
+					gr_vector_const_void_star &input_items,
+					gr_vector_void_star &output_items);
+	};
 
-      // Where all the action really happens
-      int work(int noutput_items,
-	       gr_vector_const_void_star &input_items,
-	       gr_vector_void_star &output_items);
-    };
-
-  } // namespace bats
+} // namespace bats
 } // namespace gr
 
 #endif /* INCLUDED_BATS_CHIP_DECODER_IMPL_H */
