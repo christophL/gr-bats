@@ -20,7 +20,6 @@
 
 #include <gnuradio/io_signature.h>
 #include "chip_decoder_impl.h"
-
 #define DEBUG 1
 #define DBG DEBUG && std::cout
 
@@ -32,7 +31,7 @@ namespace bats {
 					io_signature::make(1, 1, sizeof(char)),
 					chips_per_sym),
 			d_prev_samp(23), d_prev_out(1), d_chips_per_sym(chips_per_sym),
-			d_read(0)
+			d_written(false)
 	{
 		if(chips_per_sym == 0)
 			throw std::out_of_range("chips per symbol must be > 0");
@@ -48,43 +47,31 @@ namespace bats {
 	{
 		const char *in = static_cast<const char *>(input_items[0]);
 		char *out = static_cast<char *>(output_items[0]);
-		int items = 0;
-		int i = 0;
-		
-		if(d_prev_samp > 1){
-			d_prev_samp = in[i++];
-			d_read++;
-		}
-
-		//TODO: process chips_per_sym items of the input array _for each_ item to be produced
-		for(; i < noutput_items; i++){
-			if(d_prev_samp != in[i]){
-				d_prev_samp = in[i];
-				d_read++;
-				if(d_read > d_chips_per_sym){
-					out[items++] = d_prev_out;
-					d_read = 0;
-					DBG << boost::to_string(d_prev_out);
+		for(int i = 0; i < noutput_items; i++){
+			d_written = false;
+			int base = i*d_chips_per_sym;
+			for(int j = 0; j < d_chips_per_sym; j++){
+				DBG << boost::to_string((int)in[base+j]);
+				if(d_prev_samp > 1){
+					d_prev_samp = in[base+j];
+					continue;
 				}
-			} else {
-				if(d_prev_samp == 0){
-					out[items++] = 1;
-					d_prev_out = 1;
-					DBG << "1";
-				} else if(d_prev_samp == 1){
-					out[items++] = 0;
-					d_prev_out = 0;
-					DBG << "0";
-				} else {
-					DBG << "invalid input" << std::endl;
-					assert(false);
+				if(d_prev_samp == in[base+j]){
+					out[i] = d_prev_out = !d_prev_samp;
+					d_written = true;
+					//DBG << "==" << boost::to_string(d_prev_out) << " ";
+					break;
 				}
-				d_read = 0;
-			}	
+			}
+			if(!d_written){
+				d_prev_samp = in[base+d_chips_per_sym-1];
+				out[i] = d_prev_out;
+				//DBG << "!=" << boost::to_string(d_prev_out) << " ";
+			}
 		}
 		DBG << std::endl;
 
-		return items;
+		return noutput_items;
 	}
 
 	chip_decoder::sptr
