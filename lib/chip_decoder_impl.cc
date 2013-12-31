@@ -47,29 +47,30 @@ namespace bats {
 	{
 		const char *in = static_cast<const char *>(input_items[0]);
 		char *out = static_cast<char *>(output_items[0]);
+		DBG << "output items: " << noutput_items << std::endl;
 		for(int i = 0; i < noutput_items; i++){
 			d_written = false;
 			int base = i*d_chips_per_sym;
 			for(int j = 0; j < d_chips_per_sym; j++){
-				DBG << boost::to_string((int)in[base+j]);
+				DBG << (int)in[base+j];
 				if(d_prev_samp > 1){
 					d_prev_samp = in[base+j];
 					continue;
 				}
-				if(d_prev_samp == in[base+j]){
-					out[i] = d_prev_out = !d_prev_samp;
+				if(!d_written && d_prev_samp == in[base+j]){
+					out[i] = d_prev_out = d_prev_samp;
 					d_written = true;
-					//DBG << "==" << boost::to_string(d_prev_out) << " ";
-					break;
+					//break;
+				} else {
+					d_prev_samp = in[base+j];
 				}
 			}
 			if(!d_written){
 				d_prev_samp = in[base+d_chips_per_sym-1];
 				out[i] = d_prev_out;
-				//DBG << "!=" << boost::to_string(d_prev_out) << " ";
 			}
+			DBG << "\t\t\tout" << boost::to_string(d_prev_out) << std::endl;
 		}
-		DBG << std::endl;
 
 		return noutput_items;
 	}
