@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2013 <+YOU OR YOUR COMPANY+>.
+ * Copyright 2013 Christoph Leitner <c.leitner@student.uibk.ac.at>.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,38 +19,22 @@
  */
 
 
-#ifndef INCLUDED_BATS_TDMA_CONTROLLER_H
-#define INCLUDED_BATS_TDMA_CONTROLLER_H
+#ifndef INCLUDED_BATS_TIMING_CONTROLLER_H
+#define INCLUDED_BATS_TIMING_CONTROLLER_H
 
 #include <bats/api.h>
 #include <gnuradio/sync_block.h>
 
 namespace gr {
-  namespace bats {
-
-    /*!
-     * \brief <+description of block+>
-     * \ingroup bats
-     *
-     */
-    class BATS_API tdma_controller : virtual public gr::sync_block
-    {
-     public:
-      typedef boost::shared_ptr<tdma_controller> sptr;
-
-      /*!
-       * \brief Return a shared_ptr to a new instance of bats::tdma_controller.
-       *
-       * To avoid accidental use of raw pointers, bats::tdma_controller's
-       * constructor is in a private implementation
-       * class. bats::tdma_controller::make is the public interface for
-       * creating new instances.
-       */
-      static sptr make();
-    };
-
-  } // namespace bats
+namespace bats {
+	class BATS_API timing_controller : virtual public gr::sync_block
+	{
+		public:
+			typedef boost::shared_ptr<timing_controller> sptr;
+			static sptr make(double cycle_dur, double slot_dur);
+	};
+} // namespace bats
 } // namespace gr
 
-#endif /* INCLUDED_BATS_TDMA_CONTROLLER_H */
+#endif /* INCLUDED_BATS_TIMING_CONTROLLER_H */
 

@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2013 <c.leitner@student.uibk.ac.at>.
+ * Copyright 2013 Christoph Leitner <c.leitner@student.uibk.ac.at>.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 
 #include <gnuradio/io_signature.h>
 #include "chip_decoder_impl.h"
-#define DEBUG 1
+#define DEBUG 0
 #define DBG DEBUG && std::cout
 
 namespace gr {
@@ -29,7 +29,7 @@ namespace bats {
 			: sync_decimator("chip_decoder",
 					io_signature::make(1, 1, sizeof(char)),
 					io_signature::make(1, 1, sizeof(char)),
-					chips_per_sym),
+					1),
 			d_prev_samp(23), d_prev_out(1), d_chips_per_sym(chips_per_sym),
 			d_written(false)
 	{
@@ -61,7 +61,7 @@ namespace bats {
 					//out[i] = d_prev_out = d_prev_samp;
 					out[i] = d_prev_out = !d_prev_out;
 					d_written = true;
-					//break;
+					break;
 				} else {
 					d_prev_samp = in[base+j];
 				}

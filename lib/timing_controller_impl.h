@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2013 <c.leitner@student.uibk.ac.at>.
+ * Copyright 2013 Christoph Leitner <c.leitner@student.uibk.ac.at>.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,21 +18,23 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_BATS_TDMA_CONTROLLER_IMPL_H
-#define INCLUDED_BATS_TDMA_CONTROLLER_IMPL_H
+#ifndef INCLUDED_BATS_TIMING_CONTROLLER_IMPL_H
+#define INCLUDED_BATS_TIMING_CONTROLLER_IMPL_H
 
-#include <bats/tdma_controller.h>
+#include <bats/timing_controller.h>
 
 namespace gr {
 namespace bats {
 
-	class tdma_controller_impl : public tdma_controller
+	class timing_controller_impl : public timing_controller
 	{
 		private:
+			void add_sob(unsigned output, uint64_t item);
+			void add_eob(unsigned output, uint64_t item);
 
 		public:
-			tdma_controller_impl();
-			~tdma_controller_impl();
+			timing_controller_impl(double cycle_dur, double slot_dur);
+			~timing_controller_impl();
 
 			int work(int noutput_items,
 					gr_vector_const_void_star &input_items,
@@ -42,5 +44,5 @@ namespace bats {
 } // namespace bats
 } // namespace gr
 
-#endif /* INCLUDED_BATS_TDMA_CONTROLLER_IMPL_H */
+#endif /* INCLUDED_BATS_TIMING_CONTROLLER_IMPL_H */
 

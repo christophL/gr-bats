@@ -26,8 +26,7 @@ include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
 
 list(APPEND bats_sources
-    tdma_controller_impl.cc
-    chip_decoder_impl.cc
+    timing_controller_impl.cc
     chip_decoder_impl.cc
 )
 

@@ -18,6 +18,6 @@
 # Boston, MA 02110-1301, USA.
 
 install(FILES
-    bats_tdma_controller.xml
+    bats_timing_controller.xml
     bats_chip_decoder.xml DESTINATION share/gnuradio/grc/blocks
 )
