@@ -30,8 +30,7 @@ namespace bats {
 					io_signature::make(1, 1, sizeof(char)),
 					io_signature::make(1, 1, sizeof(char)),
 					1),
-			d_prev_samp(23), d_prev_out(1), d_chips_per_sym(chips_per_sym),
-			d_written(false)
+			d_chips_per_sym(chips_per_sym)
 	{
 		if(chips_per_sym == 0)
 			throw std::out_of_range("chips per symbol must be > 0");
@@ -47,30 +46,14 @@ namespace bats {
 	{
 		const char *in = static_cast<const char *>(input_items[0]);
 		char *out = static_cast<char *>(output_items[0]);
+		uint64_t read = nitems_read(0);
 		DBG << "output items: " << noutput_items << std::endl;
 		for(int i = 0; i < noutput_items; i++){
-			d_written = false;
-			int base = i*d_chips_per_sym;
-			for(int j = 0; j < d_chips_per_sym; j++){
-				DBG << (int)in[base+j];
-				if(d_prev_samp > 1){
-					d_prev_samp = in[base+j];
-					continue;
-				}
-				if(!d_written && d_prev_samp == in[base+j]){
-					//out[i] = d_prev_out = d_prev_samp;
-					out[i] = d_prev_out = !d_prev_out;
-					d_written = true;
-					break;
-				} else {
-					d_prev_samp = in[base+j];
-				}
+			if(((i + read % 2) && in[i]) || (!(i + read % 2) && !in[i])){
+				out[i] = 1;
+			} else {
+				out[i] = 0;
 			}
-			if(!d_written){
-				d_prev_samp = in[base+d_chips_per_sym-1];
-				out[i] = d_prev_out;
-			}
-			DBG << "\t\t\tout" << boost::to_string(d_prev_out) << std::endl;
 		}
 
 		return noutput_items;

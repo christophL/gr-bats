@@ -30,9 +30,6 @@ namespace bats {
 	{
 		private:
 			const unsigned d_chips_per_sym;
-			int d_prev_samp;
-			int d_prev_out;
-			bool d_written;
 		public:
 			chip_decoder_impl(unsigned chips_per_sym);
 			~chip_decoder_impl();
