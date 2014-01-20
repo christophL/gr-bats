@@ -49,7 +49,7 @@ namespace bats {
 		uint64_t read = nitems_read(0);
 		DBG << "output items: " << noutput_items << std::endl;
 		for(int i = 0; i < noutput_items; i++){
-			if(((i + read % 2) && in[i]) || (!(i + read % 2) && !in[i])){
+			if((i+ read)%2 && !in[i] || !((i + read) % 2) && in[i]){
 				out[i] = 1;
 			} else {
 				out[i] = 0;
