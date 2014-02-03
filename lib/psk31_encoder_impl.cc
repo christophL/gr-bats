@@ -1,7 +1,7 @@
 #include "psk31_encoder_impl.h"
 #include <gnuradio/io_signature.h>
 
-#define DEBUG 1
+#define DEBUG 0
 #define DBG DEBUG && std::cout
 
 using namespace gr::digimodes;
@@ -53,6 +53,11 @@ psk31_encoder_impl::handle_msg(pmt::pmt_t msg){
 		pmt::pmt_t blob = pmt::cdr(msg);
 		std::string s(static_cast<const char *>(pmt::blob_data(blob)), pmt::blob_length(blob));
 		encode_string(s);
+	} else if(pmt::is_symbol(msg)){
+		std::string s(pmt::symbol_to_string(msg));
+		encode_string(s);
+	} else {
+		std::cout << "unrecognized msg format - expected PDU or symbol" << std::endl;
 	}
             
 }
