@@ -44,6 +44,7 @@ psk31_encoder_impl::encode_string(std::string &str){
             tmp += "0";
 	
 	d_tx_string += tmp;
+	d_tx_string += "00000000";
 	DBG << "tx_string:" + d_tx_string << std::endl;
 }
 
