@@ -31,7 +31,7 @@ namespace bats {
 	{
 		public:
 			typedef boost::shared_ptr<timing_controller> sptr;
-			static sptr make(double cycle_dur, double slot_dur);
+			static sptr make(double cycle_dur, double slot_dur, double startup_dur);
 	};
 } // namespace bats
 } // namespace gr

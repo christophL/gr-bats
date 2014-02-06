@@ -4,7 +4,7 @@
 	<key>bats_timing_controller</key>
 	<category>bats</category>
 	<import>import bats</import>
-	<make>bats.timing_controller($cycle_dur, $slot_dur)</make>
+	<make>bats.timing_controller($cycle_dur, $slot_dur, $startup_dur)</make>
 
 	<param>
 		<name>Cycle Duration</name>
@@ -18,24 +18,19 @@
 		<type>double</type>
 	</param>
 
+	<param>
+		<name>Startup Duration</name>
+		<key>startup_dur</key>
+		<type>double</type>
+	</param>
+
 	<sink>
-		<name>fromUSRP</name>
+		<name>in</name>
 		<type>complex</type>
 	</sink>
 
-	<sink>
-		<name>fromEnc</name>
-		<type>complex</type>
-	</sink>
-
-
 	<source>
-		<name>toUSRP</name>
-		<type>complex</type>
-	</source>
-
-	<source>
-		<name>toDec</name>
+		<name>out</name>
 		<type>complex</type>
 	</source>
 </block>

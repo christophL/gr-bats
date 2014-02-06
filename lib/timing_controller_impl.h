@@ -29,11 +29,16 @@ namespace bats {
 	class timing_controller_impl : public timing_controller
 	{
 		private:
-			void add_sob(unsigned output, uint64_t item);
-			void add_eob(unsigned output, uint64_t item);
+			double d_cycle_time;
+			double d_slot_time;
+			double d_startup_time;
+			struct timeval d_cycle_start;
 
+			void update_cycle_start();
+			void add_sob(uint64_t item);
+			void add_eob(uint64_t item);
 		public:
-			timing_controller_impl(double cycle_dur, double slot_dur);
+			timing_controller_impl(double cycle_dur, double slot_dur, double startup_dur);
 			~timing_controller_impl();
 
 			int work(int noutput_items,
