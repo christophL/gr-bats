@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<block>
+	<name>Bats Simple MAC</name>
+	<key>bats_simple_mac</key>
+	<category>Bats</category>
+	<import>import bats</import>
+	<make>bats.simple_mac($cycle_dur, $data_slot_dur, $location_slot_dur)</make>
+	<param>
+		<name>Cycle Duration</name>
+		<key>cycle_dur</key>
+		<type>double</type>
+	</param>
+	
+	<param>
+		<name>Data Slot Duration</name>
+		<key>data_slot_dur</key>
+		<type>double</type>
+	</param>
+
+	<param>
+		<name>Location Slot Duration</name>
+		<key>location_slot_dur</key>
+		<type>double</type>
+	</param>
+
+	<sink>
+		<name>in</name>
+		<type>message</type>
+	</sink>
+
+	<source>
+		<name>out</name>
+		<type>message</type>
+	</source>
+</block>

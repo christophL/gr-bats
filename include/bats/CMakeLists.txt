@@ -25,5 +25,6 @@ install(FILES
     timing_controller.h
     chip_decoder.h
     psk31_encoder.h
-    psk31_decoder.h DESTINATION include/bats
+    psk31_decoder.h
+    simple_mac.h DESTINATION include/bats
 )

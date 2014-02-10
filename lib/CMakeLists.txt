@@ -31,6 +31,7 @@ list(APPEND bats_sources
     varicodes.cc
     psk31_encoder_impl.cc
     psk31_decoder_impl.cc
+    simple_mac_impl.cc
 )
 list(APPEND bats_libs
     ${Boost_LIBRARIES}
