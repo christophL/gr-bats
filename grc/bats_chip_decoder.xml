@@ -2,7 +2,7 @@
 <block>
   <name>BATS Chip Decoder</name>
   <key>bats_chip_decoder</key>
-  <category>bats</category>
+  <category>Bats</category>
   <import>import bats</import>
   <make>bats.chip_decoder($chips_per_sym)</make>
 

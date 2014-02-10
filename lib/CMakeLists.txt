@@ -28,10 +28,18 @@ link_directories(${Boost_LIBRARY_DIRS})
 list(APPEND bats_sources
     timing_controller_impl.cc
     chip_decoder_impl.cc
+    varicodes.cc
+    psk31_encoder_impl.cc
+    psk31_decoder_impl.cc
+)
+list(APPEND bats_libs
+    ${Boost_LIBRARIES}
+    ${GNURADIO_RUNTIME_LIBRARIES}
+    gnuradio-blocks
 )
 
 add_library(gnuradio-bats SHARED ${bats_sources})
-target_link_libraries(gnuradio-bats ${Boost_LIBRARIES} ${GNURADIO_RUNTIME_LIBRARIES})
+target_link_libraries(gnuradio-bats ${bats_libs})
 set_target_properties(gnuradio-bats PROPERTIES DEFINE_SYMBOL "gnuradio_bats_EXPORTS")
 
 ########################################################################

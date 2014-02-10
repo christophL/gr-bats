@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<block>
+	<name>PSK31 Encoder</name>
+	<key>bats_psk31_encoder</key>
+	<category>Bats</category>
+	<import>import bats</import>
+	<make>bats.psk31_encoder()</make>
+
+	<sink>
+		<name>in</name>
+		<type>message</type>
+		<nports>1</nports>
+	</sink>
+
+	<source>
+		<name>out</name>
+		<type>byte</type>
+		<nports>1</nports>
+	</source>
+
+</block>

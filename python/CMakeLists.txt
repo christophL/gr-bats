@@ -31,6 +31,8 @@ endif()
 GR_PYTHON_INSTALL(
     FILES
     __init__.py
+	#psk31_decoder.py
+    #psk31_encoder.py
     DESTINATION ${GR_PYTHON_DIR}/bats
 )
 

@@ -2,7 +2,7 @@
 <block>
 	<name>Timing Controller</name>
 	<key>bats_timing_controller</key>
-	<category>bats</category>
+	<category>Bats</category>
 	<import>import bats</import>
 	<make>bats.timing_controller($cycle_dur, $slot_dur, $startup_dur)</make>
 
