@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /* 
- * Copyright 2014 <+YOU OR YOUR COMPANY+>.
+ * Copyright 2014 <c.leitner@student.uibk.ac.at>.
  * 
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,23 +25,29 @@
 #include <gnuradio/io_signature.h>
 #include "simple_mac_impl.h"
 
+#define DEBUG 1
+#define DBG DEBUG && std::cout
+
 namespace gr {
-  namespace bats {
+namespace bats {
 
-    simple_mac::sptr
-    simple_mac::make(double cycle_dur, double data_slot_dur, double location_slot_dur)
-    {
-      return gnuradio::get_initial_sptr
-        (new simple_mac_impl(cycle_dur, data_slot_dur, location_slot_dur));
-    }
+	simple_mac::sptr
+	simple_mac::make(double cycle_dur, double data_slot_dur, 
+			double location_slot_dur, int bandwidth, int chips_per_sym)
+	{
+		return gnuradio::get_initial_sptr
+				(new simple_mac_impl(cycle_dur, data_slot_dur, location_slot_dur,
+						bandwidth, chips_per_sym));
+	}
 
-    simple_mac_impl::simple_mac_impl(double cycle_dur, double data_slot_dur, double location_slot_dur)
+    simple_mac_impl::simple_mac_impl(double cycle_dur, double data_slot_dur, double location_slot_dur,
+			int bandwidth, int chips_per_sym)
 			: gr::block("simple_mac",
 					gr::io_signature::make(0, 0, 0),
 					gr::io_signature::make(0, 0, 0)),
-			d_thread(&simple_mac_impl::run, this), d_cycle_time(cycle_dur), 
-			d_data_slot_time(data_slot_dur), d_loc_slot_time(location_slot_dur),
-			d_stop(false)
+			d_thread(&simple_mac_impl::run, this), d_cycle_time(cycle_dur), d_stop(false),
+			d_max_data((data_slot_dur * bandwidth) / (chips_per_sym/2)),
+			d_max_total(pmt::from_long(((data_slot_dur + location_slot_dur) * bandwidth) / (chips_per_sym/2)))
     {
 		message_port_register_in(pmt::mp("in"));
 		set_msg_handler(pmt::mp("in"), boost::bind(&simple_mac_impl::handle_message, this, _1));
@@ -60,30 +66,53 @@ namespace gr {
 			pmt::pmt_t msg = q_pop();
 		
 			//time at which the lower layer should schedule the message	
-			uhd::time_spec_t now = uhd::time_spec_t(d_cycle_start.tv_sec + d_cycle_start.tv_usec / 1e6);
+			/*uhd::time_spec_t now = uhd::time_spec_t(d_cycle_start.tv_sec + d_cycle_start.tv_usec / 1e6);
 			pmt::pmt_t time_value = pmt::make_tuple(
 					pmt::from_uint64(now.get_full_secs()),
 					pmt::from_double(now.get_frac_secs()));
-
+			*/
+			pmt::pmt_t time_value = pmt::make_tuple(
+					pmt::from_uint64(d_cycle_start.tv_sec),
+					pmt::from_double(d_cycle_start.tv_usec/1e6));
+			
 			//TODO: calc if msg fits in time slot	
+			pmt::pmt_t dict, payload;
+			std::string tx_string;
+
 			if(pmt::is_pair(msg)){
-				pmt::pmt_t dict = pmt::car(msg);
+				dict = pmt::car(msg);
 				if(!pmt::is_dict(dict)){
 					dict = pmt::make_dict();
 				}
-				pmt::pmt_t payload = pmt::cdr(msg);
-				
-				dict = pmt::dict_add(dict, pmt::mp("tx_time"), time_value);
-				message_port_pub(pmt::mp("out"), pmt::cons(dict, payload));
+				payload = pmt::cdr(msg);
 			} else if(pmt::is_symbol(msg)){
-				pmt::pmt_t dict = pmt::make_dict();
-				dict = pmt::dict_add(dict, pmt::mp("tx_time"), time_value);
-				message_port_pub(pmt::mp("out"), pmt::cons(dict, msg));
+				tx_string = pmt::symbol_to_string(msg);
+				payload = pmt::init_u8vector(tx_string.length(), (const uint8_t *)tx_string.c_str());
+				dict = pmt::make_dict();
 			} else {
-				std::cerr << "Bats Simple MAC: invalid message format, expected PDU or PMT Symbol" << std::endl;
+				std::cerr << "MAC: invalid message format, expected PDU or PMT Symbol" << std::endl;
 				continue;
 			}	
 			
+			size_t tx_size = tx_string.length();
+			size_t tx_size_encoded = 0;
+			for(char c : tx_string){
+				tx_size_encoded += ::strlen(varicodes::varicode_vals[c]);
+				tx_size_encoded += 2; //character delimiter
+			}
+			
+			tx_size_encoded += 8 - tx_size_encoded%8;
+			tx_size_encoded += 16; //front + back padding
+
+			DBG << "MAC: size of msg to send: " << (int)tx_size_encoded << std::endl;
+			if(tx_size_encoded > d_max_data){
+				std::cerr << "MAC: message will not fit into one tx slot, msg dropped (max allowed: " << d_max_data << ")" << std::endl;
+				continue;
+			}
+
+			dict = pmt::dict_add(dict, pmt::mp("tx_time"), time_value);
+			dict = pmt::dict_add(dict, pmt::mp("max_tx"), d_max_total);
+			message_port_pub(pmt::mp("out"), pmt::cons(dict, payload));
 			update_cycle_start();
 			boost::this_thread::sleep(boost::posix_time::milliseconds(d_cycle_time*1e3 - 150));
 		}			
@@ -94,7 +123,7 @@ namespace gr {
 		if(d_msg_queue.size() <= 10000){
 			q_push(msg);
 		} else {
-			std::cerr << "Bats simple MAC: msg queue is full, incoming msg dropped" << std::endl;
+			std::cerr << "MAC: msg queue is full, incoming msg dropped" << std::endl;
 		}	
 	}
 
@@ -134,6 +163,6 @@ namespace gr {
 		d_thread.join();
     }
 
-  } /* namespace bats */
+} /* namespace bats */
 } /* namespace gr */
 

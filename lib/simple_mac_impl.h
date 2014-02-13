@@ -24,6 +24,7 @@
 #include <bats/simple_mac.h>
 #include <queue>
 #include <uhd/types/time_spec.hpp>
+#include "varicodes.h"
 
 namespace gr {
 namespace bats {
@@ -31,8 +32,8 @@ namespace bats {
 	{
 		private:
 			const double d_cycle_time;
-			const double d_data_slot_time;
-			const double d_loc_slot_time;
+			const size_t d_max_data;
+			const pmt::pmt_t d_max_total;
 			struct timeval d_cycle_start;
 
 			std::queue<pmt::pmt_t> d_msg_queue;
@@ -47,7 +48,8 @@ namespace bats {
 			void handle_message(pmt::pmt_t msg);
 			void update_cycle_start();
 		public:
-			simple_mac_impl(double cycle_dur, double data_slot_dur, double location_slot_dur);
+			simple_mac_impl(double cycle_dur, double data_slot_dur, 
+					double location_slot_dur, int bandwidth, int chips_per_sym);
 			~simple_mac_impl();
 	};
 

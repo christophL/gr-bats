@@ -26,17 +26,18 @@
 #include <gnuradio/block.h>
 
 namespace gr {
-  namespace bats {
+namespace bats {
 
-    class BATS_API simple_mac : virtual public gr::block
-    {
-     public:
-      typedef boost::shared_ptr<simple_mac> sptr;
+	class BATS_API simple_mac : virtual public gr::block
+	{
+		public:
+			typedef boost::shared_ptr<simple_mac> sptr;
 
-      static sptr make(double cycle_dur = 1.0, double data_slot_dur = 250e-6, double location_slot_dur = 250e-6);
-    };
+			static sptr make(double cycle_dur = 1.0, double data_slot_dur = 250e-6, 
+					double location_slot_dur = 250e-6, int bandwidth = 200000, int chips_per_sym = 10);
+	};
 
-  } // namespace bats
+} // namespace bats
 } // namespace gr
 
 #endif /* INCLUDED_BATS_SIMPLE_MAC_H */
