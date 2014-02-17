@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='ASCII'?>
 <flow_graph>
-  <timestamp>Mon Feb 10 12:57:14 2014</timestamp>
+  <timestamp>Mon Feb 17 15:00:58 2014</timestamp>
   <block>
     <key>options</key>
     <param>
@@ -64,7 +64,7 @@
     <key>variable</key>
     <param>
       <key>id</key>
-      <value>freq</value>
+      <value>samp_rate</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -72,11 +72,11 @@
     </param>
     <param>
       <key>value</key>
-      <value>2485000000</value>
+      <value>1e6</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(95, 74)</value>
+      <value>(7, 75)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -110,7 +110,7 @@
     <key>variable</key>
     <param>
       <key>id</key>
-      <value>samp_rate</value>
+      <value>freq</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -118,11 +118,11 @@
     </param>
     <param>
       <key>value</key>
-      <value>1e6</value>
+      <value>2485000000</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(7, 75)</value>
+      <value>(95, 74)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1364,41 +1364,6 @@
     </param>
   </block>
   <block>
-    <key>blocks_message_strobe</key>
-    <param>
-      <key>id</key>
-      <value>blocks_message_strobe_0</value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>msg</key>
-      <value>pmt.intern("aaaa\n")</value>
-    </param>
-    <param>
-      <key>period</key>
-      <value>1000</value>
-    </param>
-    <param>
-      <key>affinity</key>
-      <value></value>
-    </param>
-    <param>
-      <key>minoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(369, 176)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-  </block>
-  <block>
     <key>wxgui_scopesink2</key>
     <param>
       <key>id</key>
@@ -1548,6 +1513,41 @@
     </param>
   </block>
   <block>
+    <key>blocks_message_strobe</key>
+    <param>
+      <key>id</key>
+      <value>blocks_message_strobe_0</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>msg</key>
+      <value>pmt.intern("aaaa\n")</value>
+    </param>
+    <param>
+      <key>period</key>
+      <value>500</value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(157, 145)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+  </block>
+  <block>
     <key>blocks_socket_pdu</key>
     <param>
       <key>id</key>
@@ -1583,11 +1583,58 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(206, 162)</value>
+      <value>(154, 460)</value>
     </param>
     <param>
       <key>_rotation</key>
       <value>90</value>
+    </param>
+  </block>
+  <block>
+    <key>bats_simple_mac</key>
+    <param>
+      <key>id</key>
+      <value>bats_simple_mac_0</value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>cycle_dur</key>
+      <value>1</value>
+    </param>
+    <param>
+      <key>data_slot_dur</key>
+      <value>1.25e-3</value>
+    </param>
+    <param>
+      <key>location_slot_dur</key>
+      <value>250e-6</value>
+    </param>
+    <param>
+      <key>bandwidth</key>
+      <value>200000</value>
+    </param>
+    <param>
+      <key>chips_per_sym</key>
+      <value>chips_per_sym</value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(381, 148)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
     </param>
   </block>
   <connection>
@@ -1669,8 +1716,14 @@
     <sink_key>0</sink_key>
   </connection>
   <connection>
-    <source_block_id>blocks_socket_pdu_0</source_block_id>
+    <source_block_id>bats_simple_mac_0</source_block_id>
     <sink_block_id>bats_psk31_encoder_0</sink_block_id>
+    <source_key>0</source_key>
+    <sink_key>0</sink_key>
+  </connection>
+  <connection>
+    <source_block_id>blocks_socket_pdu_0</source_block_id>
+    <sink_block_id>bats_simple_mac_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
