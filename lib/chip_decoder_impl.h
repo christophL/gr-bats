@@ -28,10 +28,8 @@ namespace bats {
 
 	class chip_decoder_impl : public chip_decoder
 	{
-		private:
-			const unsigned d_chips_per_sym;
 		public:
-			chip_decoder_impl(unsigned chips_per_sym);
+			chip_decoder_impl();
 			~chip_decoder_impl();
 
 			int work(int noutput_items,

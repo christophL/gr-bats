@@ -4,13 +4,7 @@
   <key>bats_chip_decoder</key>
   <category>Bats</category>
   <import>import bats</import>
-  <make>bats.chip_decoder($chips_per_sym)</make>
-
-  <param>
-	<name>Chips per Symbol</name>
-	<key>chips_per_sym</key>
-	<type>int</type>
-  </param>
+  <make>bats.chip_decoder()</make>
 
   <sink>
     <name>in</name>

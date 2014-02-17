@@ -23,15 +23,15 @@
 #define INCLUDED_BATS_CHIP_DECODER_H
 
 #include <bats/api.h>
-#include <gnuradio/sync_decimator.h>
+#include <gnuradio/sync_block.h>
 
 namespace gr {
 namespace bats {
-	class BATS_API chip_decoder : virtual public sync_decimator
+	class BATS_API chip_decoder : virtual public sync_block
 	{
 		public:
 			typedef boost::shared_ptr<chip_decoder> sptr;
-			static sptr make(unsigned chips_per_sym);
+			static sptr make();
 	};
 
 } // namespace bats

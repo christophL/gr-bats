@@ -25,15 +25,11 @@
 
 namespace gr {
 namespace bats {
-	chip_decoder_impl::chip_decoder_impl(unsigned chips_per_sym)
-			: sync_decimator("chip_decoder",
+	chip_decoder_impl::chip_decoder_impl()
+			: sync_block("chip_decoder",
 					io_signature::make(1, 1, sizeof(char)),
-					io_signature::make(1, 1, sizeof(char)),
-					1),
-			d_chips_per_sym(chips_per_sym)
+					io_signature::make(1, 1, sizeof(char)))
 	{
-		if(chips_per_sym == 0)
-			throw std::out_of_range("chips per symbol must be > 0");
 	}
 
 	chip_decoder_impl::~chip_decoder_impl()
@@ -50,7 +46,7 @@ namespace bats {
 		DBG << "output items: " << noutput_items << std::endl;
 		for(int i = 0; i < noutput_items; i++){
 			if((i+ read)%2 && !in[i] || !((i + read) % 2) && in[i]){
-				out[i] = 0;
+				out[i] = -1;
 			} else {
 				out[i] = 1;
 			}
@@ -60,9 +56,9 @@ namespace bats {
 	}
 
 	chip_decoder::sptr
-	chip_decoder::make(unsigned chips_per_sym)
+	chip_decoder::make()
 	{
-		return gnuradio::get_initial_sptr(new chip_decoder_impl(chips_per_sym));
+		return gnuradio::get_initial_sptr(new chip_decoder_impl());
 	}
 
 } /* namespace bats */
