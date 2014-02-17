@@ -4,18 +4,15 @@
 #include <bats/psk31_encoder.h>
 #include "varicodes.h"
 #include <string>
-#include <unordered_map>
 
 
 namespace gr {
 namespace bats {
 	class psk31_encoder_impl : public psk31_encoder {
 		private:
-			std::unordered_map<char, std::string> d_varimap;
 			std::string d_tx_string;
 			void handle_msg(pmt::pmt_t msg);
 			void encode_string(std::string &str);
-			void fill_varimap();
 
 		public:
 			psk31_encoder_impl();

@@ -75,7 +75,6 @@ namespace bats {
 					pmt::from_uint64(d_cycle_start.tv_sec),
 					pmt::from_double(d_cycle_start.tv_usec/1e6));
 			
-			//TODO: calc if msg fits in time slot	
 			pmt::pmt_t dict, payload;
 			std::string tx_string;
 

@@ -9,19 +9,10 @@ using namespace gr::bats;
 psk31_encoder_impl::psk31_encoder_impl()
 		: sync_block("psk31_encoder",
 				gr::io_signature::make(0, 0, 0),
-				gr::io_signature::make(1, 1, sizeof(uint8_t))),
-		d_varimap(256){
+				gr::io_signature::make(1, 1, sizeof(uint8_t)))
+{
 	
 	message_port_register_in(pmt::mp("in"));
-	fill_varimap();
-}
-
-void
-psk31_encoder_impl::fill_varimap(){
-	for(int i = 0; i < varicodes::varicode_num_entries; i++){
-		std::pair<char,std::string> to_insert(varicodes::varicode_keys[i], varicodes::varicode_vals[i]);
-		d_varimap.insert(to_insert);
-	}
 }
 
 void
@@ -34,10 +25,10 @@ psk31_encoder_impl::encode_string(std::string &str){
 		if(c == '\n'){
 			break;
 		}
-		tmp += d_varimap[c];
+		tmp += varicodes::varicode_vals[c];
 		tmp += "00";
 	}
-	tmp += d_varimap['\n'];
+	tmp += varicodes::varicode_vals['\n'];
 	tmp += "00";
 
 	while(tmp.length() % 8 != 0)
