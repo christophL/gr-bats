@@ -60,17 +60,11 @@ namespace bats {
 		boost::this_thread::sleep(boost::posix_time::milliseconds(500));
 		//after startup: start sending in the next cycle
 		gettimeofday(&d_cycle_start, NULL);
-		update_cycle_start();
-		boost::this_thread::sleep(boost::posix_time::milliseconds(d_cycle_time*1e3 - 150));
 		while(!d_stop){
 			pmt::pmt_t msg = q_pop();
+			update_cycle_start();
 		
 			//time at which the lower layer should schedule the message	
-			/*uhd::time_spec_t now = uhd::time_spec_t(d_cycle_start.tv_sec + d_cycle_start.tv_usec / 1e6);
-			pmt::pmt_t time_value = pmt::make_tuple(
-					pmt::from_uint64(now.get_full_secs()),
-					pmt::from_double(now.get_frac_secs()));
-			*/
 			pmt::pmt_t time_value = pmt::make_tuple(
 					pmt::from_uint64(d_cycle_start.tv_sec),
 					pmt::from_double(d_cycle_start.tv_usec/1e6));
@@ -84,6 +78,13 @@ namespace bats {
 					dict = pmt::make_dict();
 				}
 				payload = pmt::cdr(msg);
+				
+				char buf[256];
+				size_t data_len = pmt::blob_length(payload);
+				std::memcpy(buf, pmt::blob_data(payload), data_len);
+
+				tx_string = buf;
+				//tx_string.erase(tx_string.length()-1, tx_string.length());
 			} else if(pmt::is_symbol(msg)){
 				tx_string = pmt::symbol_to_string(msg);
 				payload = pmt::init_u8vector(tx_string.length(), (const uint8_t *)tx_string.c_str());
@@ -92,28 +93,40 @@ namespace bats {
 				std::cerr << "MAC: invalid message format, expected PDU or PMT Symbol" << std::endl;
 				continue;
 			}	
-			
+	
+			DBG << tx_string << std::endl;
+			if(tx_string.length() <= 1){
+				continue;
+			}	
+
 			size_t tx_size = tx_string.length();
 			size_t tx_size_encoded = 0;
+
 			for(char c : tx_string){
 				tx_size_encoded += ::strlen(varicodes::varicode_vals[c]);
 				tx_size_encoded += 2; //character delimiter
 			}
-			
 			tx_size_encoded += 8 - tx_size_encoded%8;
 			tx_size_encoded += 16; //front + back padding
+			
 
 			DBG << "MAC: size of msg to send: " << (int)tx_size_encoded << std::endl;
 			if(tx_size_encoded > d_max_data){
 				std::cerr << "MAC: message will not fit into one tx slot, msg dropped (max allowed: " << d_max_data << ")" << std::endl;
 				continue;
 			}
-
+	
 			dict = pmt::dict_add(dict, pmt::mp("tx_time"), time_value);
 			dict = pmt::dict_add(dict, pmt::mp("max_tx"), d_max_total);
 			message_port_pub(pmt::mp("out"), pmt::cons(dict, payload));
-			update_cycle_start();
-			boost::this_thread::sleep(boost::posix_time::milliseconds(d_cycle_time*1e3 - 150));
+			
+			struct timeval time_now;
+			gettimeofday(&time_now, NULL);
+			//sleep until until next cycle start (minus 150ms to account for processing delay)
+			boost::this_thread::sleep(boost::posix_time::milliseconds(
+						(d_cycle_start.tv_sec - time_now.tv_sec)*1000 + 
+						(d_cycle_start.tv_usec - time_now.tv_usec)/1000 + 
+						d_cycle_time*1000 - 150));
 		}			
 	}
 
@@ -147,11 +160,24 @@ namespace bats {
 
 	void
 	simple_mac_impl::update_cycle_start(){
-		d_cycle_start.tv_sec += int(d_cycle_time);
-		d_cycle_start.tv_usec += int(fmod(d_cycle_time,1)*1e6);
-		if(d_cycle_start.tv_usec >= int(1e6)){
-			d_cycle_start.tv_usec -= int(1e6);
-			d_cycle_start.tv_sec++;
+		struct timeval time_now;
+		gettimeofday(&time_now, NULL);
+
+		time_now.tv_usec += 100000;
+		if(time_now.tv_usec >= int(1e6)){
+			time_now.tv_usec -= int(1e6);
+			time_now.tv_sec++;
+		}
+
+		if(time_now.tv_sec > d_cycle_start.tv_sec || 
+				time_now.tv_sec == d_cycle_start.tv_sec && time_now.tv_usec > d_cycle_start.tv_usec){
+			//missed start of cycle, or too close to cycle start -- tx next cycle
+			d_cycle_start.tv_sec += int(d_cycle_time) + time_now.tv_sec - d_cycle_start.tv_sec;
+			d_cycle_start.tv_usec += int(fmod(d_cycle_time,1)*1e6);
+			if(d_cycle_start.tv_usec >= int(1e6)){
+				d_cycle_start.tv_usec -= int(1e6);
+				d_cycle_start.tv_sec++;
+			}
 		}
 	}
 
