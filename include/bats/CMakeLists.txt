@@ -22,7 +22,6 @@
 ########################################################################
 install(FILES
     api.h
-    timing_controller.h
     chip_decoder.h
     psk31_encoder.h
     psk31_decoder.h
