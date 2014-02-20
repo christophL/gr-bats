@@ -121,11 +121,10 @@ namespace bats {
 			
 			struct timeval time_now;
 			gettimeofday(&time_now, NULL);
-			//sleep until until next cycle start (minus 200ms to account for processing delay)
+			//sleep until until next cycle start
 			boost::this_thread::sleep(boost::posix_time::milliseconds(
 						(d_cycle_start.tv_sec - time_now.tv_sec)*1000 + 
-						(d_cycle_start.tv_usec - time_now.tv_usec)/1000 + 
-						d_cycle_time*1000 - 200));
+						(d_cycle_start.tv_usec - time_now.tv_usec)/1000));
 		}			
 	}
 
