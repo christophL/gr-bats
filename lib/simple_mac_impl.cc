@@ -47,7 +47,7 @@ namespace bats {
 					gr::io_signature::make(0, 0, 0)),
 			d_thread(&simple_mac_impl::run, this), d_cycle_time(cycle_dur), d_stop(false),
 			d_max_data((data_slot_dur * bandwidth) / (chips_per_sym/2)),
-			d_max_total(pmt::from_long(((data_slot_dur + location_slot_dur) * bandwidth) / (chips_per_sym/2)))
+			d_max_total(pmt::from_long(((data_slot_dur + location_slot_dur) * bandwidth) / (chips_per_sym/2))) //chips_per_sym instead of -"-/2?
     {
 		message_port_register_in(pmt::mp("in"));
 		set_msg_handler(pmt::mp("in"), boost::bind(&simple_mac_impl::handle_message, this, _1));
@@ -70,7 +70,7 @@ namespace bats {
 					pmt::from_double(d_cycle_start.tv_usec/1e6));
 			
 			pmt::pmt_t dict, payload;
-			std::string tx_string;
+			std::string tx_string("");
 
 			if(pmt::is_pair(msg)){
 				dict = pmt::car(msg);
@@ -79,12 +79,11 @@ namespace bats {
 				}
 				payload = pmt::cdr(msg);
 				
-				char buf[256];
+				char buf[256] = {0};
 				size_t data_len = pmt::blob_length(payload);
 				std::memcpy(buf, pmt::blob_data(payload), data_len);
 
 				tx_string = buf;
-				//tx_string.erase(tx_string.length()-1, tx_string.length());
 			} else if(pmt::is_symbol(msg)){
 				tx_string = pmt::symbol_to_string(msg);
 				payload = pmt::init_u8vector(tx_string.length(), (const uint8_t *)tx_string.c_str());
@@ -94,8 +93,8 @@ namespace bats {
 				continue;
 			}	
 	
-			DBG << tx_string << std::endl;
-			if(tx_string.length() <= 1){
+			//DBG << tx_string << std::endl;
+			if(tx_string.data()[0] == '\n'){
 				continue;
 			}	
 
@@ -122,11 +121,11 @@ namespace bats {
 			
 			struct timeval time_now;
 			gettimeofday(&time_now, NULL);
-			//sleep until until next cycle start (minus 150ms to account for processing delay)
+			//sleep until until next cycle start (minus 200ms to account for processing delay)
 			boost::this_thread::sleep(boost::posix_time::milliseconds(
 						(d_cycle_start.tv_sec - time_now.tv_sec)*1000 + 
 						(d_cycle_start.tv_usec - time_now.tv_usec)/1000 + 
-						d_cycle_time*1000 - 150));
+						d_cycle_time*1000 - 200));
 		}			
 	}
 
