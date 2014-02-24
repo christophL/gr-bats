@@ -79,6 +79,7 @@ psk31_encoder_impl::handle_msg(pmt::pmt_t msg){
 		encode_string(s);
 		if(d_tx_string.length()){
 			d_pad = d_max_tx - d_tx_string.length();
+			d_pad += 8 - d_pad%8;
 			DBG << "padding with " << d_pad << " 0s" << std::endl;
 		}
 	} else {
@@ -113,11 +114,11 @@ psk31_encoder_impl::work(int noutput, gr_vector_const_void_star& input_items,
 			out[i] = u8;
 			d_tx_string = d_tx_string.erase(0,8);
 			items++;
-			DBG << "remaining string: " + d_tx_string << std::endl;
+			//DBG << "remaining string: " + d_tx_string << std::endl;
 		} else if(d_pad){
 			out[i] = 0;
 			items++;
-			d_pad--;
+			d_pad-=8;
 		} else {
 			break;
 		}
