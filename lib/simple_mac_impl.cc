@@ -33,21 +33,21 @@ namespace bats {
 
 	simple_mac::sptr
 	simple_mac::make(double cycle_dur, double data_slot_dur, 
-			double location_slot_dur, int bandwidth, int chips_per_sym)
+			double location_slot_dur, int bandwidth)
 	{
 		return gnuradio::get_initial_sptr
 				(new simple_mac_impl(cycle_dur, data_slot_dur, location_slot_dur,
-						bandwidth, chips_per_sym));
+						bandwidth));
 	}
 
     simple_mac_impl::simple_mac_impl(double cycle_dur, double data_slot_dur, double location_slot_dur,
-			int bandwidth, int chips_per_sym)
+			int bandwidth)
 			: gr::block("simple_mac",
 					gr::io_signature::make(0, 0, 0),
 					gr::io_signature::make(0, 0, 0)),
 			d_thread(&simple_mac_impl::run, this), d_cycle_time(cycle_dur), d_stop(false),
-			d_max_data((data_slot_dur * bandwidth) / (chips_per_sym/2)),
-			d_max_total(pmt::from_long(((data_slot_dur + location_slot_dur) * bandwidth) / (chips_per_sym/2))) //chips_per_sym instead of -"-/2?
+			d_max_data(data_slot_dur * bandwidth),
+			d_max_total(pmt::from_long((data_slot_dur + location_slot_dur) * bandwidth))
     {
 		message_port_register_in(pmt::mp("in"));
 		set_msg_handler(pmt::mp("in"), boost::bind(&simple_mac_impl::handle_message, this, _1));
@@ -98,6 +98,7 @@ namespace bats {
 				continue;
 			}	
 
+			//calculate length of string to send
 			size_t tx_size = tx_string.length();
 			size_t tx_size_encoded = 0;
 

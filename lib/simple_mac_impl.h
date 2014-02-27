@@ -49,7 +49,7 @@ namespace bats {
 			void update_cycle_start();
 		public:
 			simple_mac_impl(double cycle_dur, double data_slot_dur, 
-					double location_slot_dur, int bandwidth, int chips_per_sym);
+					double location_slot_dur, int bandwidth);
 			~simple_mac_impl();
 	};
 

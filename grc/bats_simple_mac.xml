@@ -4,7 +4,7 @@
 	<key>bats_simple_mac</key>
 	<category>Bats</category>
 	<import>import bats</import>
-	<make>bats.simple_mac($cycle_dur, $data_slot_dur, $location_slot_dur, $bandwidth, $chips_per_sym)</make>
+	<make>bats.simple_mac($cycle_dur, $data_slot_dur, $location_slot_dur, $bandwidth)</make>
 	<param>
 		<name>Cycle Duration</name>
 		<key>cycle_dur</key>
@@ -26,12 +26,6 @@
 	<param>
 		<name>Bandwidth</name>
 		<key>bandwidth</key>
-		<type>int</type>
-	</param>
-
-	<param>
-		<name>Chips per Symbol</name>
-		<key>chips_per_sym</key>
 		<type>int</type>
 	</param>
 

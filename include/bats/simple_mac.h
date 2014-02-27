@@ -34,7 +34,7 @@ namespace bats {
 			typedef boost::shared_ptr<simple_mac> sptr;
 
 			static sptr make(double cycle_dur = 1.0, double data_slot_dur = 250e-6, 
-					double location_slot_dur = 250e-6, int bandwidth = 200000, int chips_per_sym = 10);
+					double location_slot_dur = 250e-6, int bandwidth = 200000);
 	};
 
 } // namespace bats
