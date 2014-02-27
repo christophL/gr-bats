@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='ASCII'?>
 <flow_graph>
-  <timestamp>Mon Feb 17 15:00:58 2014</timestamp>
+  <timestamp>Thu Feb 27 10:11:07 2014</timestamp>
   <block>
     <key>options</key>
     <param>
@@ -1606,7 +1606,7 @@
     </param>
     <param>
       <key>data_slot_dur</key>
-      <value>1.25e-3</value>
+      <value>250e-6</value>
     </param>
     <param>
       <key>location_slot_dur</key>
@@ -1615,10 +1615,6 @@
     <param>
       <key>bandwidth</key>
       <value>200000</value>
-    </param>
-    <param>
-      <key>chips_per_sym</key>
-      <value>chips_per_sym</value>
     </param>
     <param>
       <key>affinity</key>
